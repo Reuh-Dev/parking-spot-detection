@@ -14,9 +14,6 @@ Model/finetuned/runs/
 Model/finetuned_rtdetr/runs/
 Model/finetuned/resolution_experiment/runs/
 
-# Base pretrained weights — auto-downloaded by ultralytics when needed
-Model/base/yolov8s.pt
-
 # Gradio temp files
 gradio_cached_examples/
 *.tmp
