@@ -106,7 +106,7 @@ Download the fine-tuned weights from the link below and place them at the paths 
 | Fine-tuned YOLOv8s | `Model/finetuned/best_model.pt` |
 | Fine-tuned RT-DETR-l | `Model/finetuned_rtdetr/best_model.pt` |
 
-**Download:** [Google Drive — Model Weights](<INSERT_DRIVE_LINK_HERE>)
+**Download:** The weights are included in this repository under `Model/finetuned/best_model.pt` and `Model/finetuned_rtdetr/best_model.pt`. Clone the repo to get them.
 
 ---
 
