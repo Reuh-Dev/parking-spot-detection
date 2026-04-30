@@ -1,0 +1,22 @@
+# Core deep learning
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Object detection framework (YOLOv8 + RT-DETR)
+ultralytics>=8.0.0
+
+# Computer vision
+opencv-python>=4.8.0
+
+# Numerical computing
+numpy>=1.24.0
+
+# Visualisation
+matplotlib>=3.7.0
+seaborn>=0.13.0
+
+# Demo interface
+gradio>=4.0.0
+
+# Utilities
+PyYAML>=6.0

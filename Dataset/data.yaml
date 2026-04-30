@@ -1,0 +1,13 @@
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 2
+names: ['empty', 'occupied']
+
+roboflow:
+  workspace: aiml-the-lebron-project
+  project: parking-finder
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/aiml-the-lebron-project/parking-finder/dataset/1
