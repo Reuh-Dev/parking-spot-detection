@@ -38,7 +38,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
 DATA_YAML   = os.path.join(PROJECT_ROOT, "Dataset", "data.yaml")
 RUNS_DIR    = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runs")
 
-RESOLUTIONS = [320, 640, 1280]
+RESOLUTIONS = [320, 1280]  # 640 is already trained by Model/finetuned/train.py
 
 # =============================================================================
 # FIXED HYPERPARAMETERS — identical to main train.py except imgsz
@@ -114,7 +114,7 @@ def parse_args():
     )
     parser.add_argument(
         "--res", type=int, default=None, choices=RESOLUTIONS,
-        help="Train a single resolution (320, 640, or 1280). Omit to train all.",
+        help="Train a single resolution (320 or 1280). Omit to train both.",
     )
     return parser.parse_args()
 
