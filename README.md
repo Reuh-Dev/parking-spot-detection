@@ -86,7 +86,7 @@ Project1/
 ### 1. Clone the repository and install dependencies
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Reuh-Dev/parking-spot-detection
 cd Project1
 pip install -r requirements.txt
 ```
