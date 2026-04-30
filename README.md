@@ -47,9 +47,9 @@ Manual monitoring of parking lots is inefficient and costly. This system automat
 Project1/
 ├── Dataset/
 │   ├── data.yaml                         — YOLO dataset config (classes, split paths)
-│   ├── train/images/ + train/labels/     — 7,103 training images + YOLO labels
-│   ├── valid/images/ + valid/labels/     — 558 validation images + YOLO labels
-│   └── test/images/  + test/labels/      — 226 test images + YOLO labels
+│   ├── README.dataset.txt                — Dataset source info
+│   └── README.roboflow.txt               — Roboflow export info
+│   (images not included — download from Roboflow, see Setup below)
 │
 ├── Model/
 │   ├── base/
@@ -58,7 +58,11 @@ Project1/
 │   │   ├── train.py                      — Fine-tune YOLOv8s (50 epochs, 640px, batch 16)
 │   │   ├── best_model.pt                 — Best fine-tuned YOLOv8s weights
 │   │   └── resolution_experiment/
-│   │       └── train_resolution.py       — Ablation: train at 320 / 640 / 1280
+│   │       ├── train_resolution.py       — Ablation: train at 320 and 1280
+│   │       ├── res_320/
+│   │       │   └── best_model.pt         — Best weights at 320×320
+│   │       └── res_1280/
+│   │           └── best_model.pt         — Best weights at 1280×1280
 │   └── finetuned_rtdetr/
 │       ├── train.py                      — Fine-tune RT-DETR-l (50 epochs, 640px, batch 8)
 │       └── best_model.pt                 — Best fine-tuned RT-DETR-l weights
@@ -67,7 +71,7 @@ Project1/
 │   ├── demo.py                           — Gradio web interface (3 tabs)
 │   └── run_demo.bat                      — Windows launcher for the demo
 │
-├── Results/
+├── results/
 │   ├── evaluate.py                       — All evaluation modes (see below)
 │   └── visuals/
 │       ├── base_vs_finetuned/            — Confusion matrices + metrics comparison
@@ -87,7 +91,7 @@ Project1/
 
 ```bash
 git clone https://github.com/Reuh-Dev/parking-spot-detection
-cd Project1
+cd parking-spot-detection
 pip install -r requirements.txt
 ```
 
@@ -95,18 +99,32 @@ pip install -r requirements.txt
 
 ### 2. Download the dataset
 
-The dataset is already included in the `Dataset/` folder. If re-downloading, get it from [Roboflow](https://universe.roboflow.com/aiml-the-lebron-project/parking-finder/dataset/1) in YOLOv8 format and place it under `Dataset/`.
+The dataset images are not included in the repository due to size. Download the dataset in **YOLOv8 format** from Roboflow:
 
-### 3. Download pretrained weights
+[Roboflow — Parking Finder Dataset](https://universe.roboflow.com/aiml-the-lebron-project/parking-finder/dataset/1)
 
-Download the fine-tuned weights from the link below and place them at the paths shown:
+Once downloaded, place the contents so the structure matches:
 
-| File | Path |
+```
+Dataset/
+├── train/images/   and   train/labels/
+├── valid/images/   and   valid/labels/
+└── test/images/    and   test/labels/
+```
+
+The `data.yaml` file is already included in the repo and requires no changes.
+
+### 3. Weights
+
+All trained weights are included in the repository — no separate download needed:
+
+| Model | Path |
 |---|---|
+| Base YOLOv8s (COCO pretrained) | `Model/base/yolov8s.pt` |
 | Fine-tuned YOLOv8s | `Model/finetuned/best_model.pt` |
+| Fine-tuned YOLOv8s 320×320 | `Model/finetuned/resolution_experiment/res_320/best_model.pt` |
+| Fine-tuned YOLOv8s 1280×1280 | `Model/finetuned/resolution_experiment/res_1280/best_model.pt` |
 | Fine-tuned RT-DETR-l | `Model/finetuned_rtdetr/best_model.pt` |
-
-**Download:** The weights are included in this repository under `Model/finetuned/best_model.pt` and `Model/finetuned_rtdetr/best_model.pt`. Clone the repo to get them.
 
 ---
 
@@ -136,7 +154,7 @@ The demo has three tabs:
 
 ## Training
 
-> Requires a CUDA-capable GPU.
+> Requires a CUDA-capable GPU. Complete the dataset setup first.
 
 ### Fine-tune YOLOv8s
 
@@ -144,7 +162,7 @@ The demo has three tabs:
 python Model/finetuned/train.py
 ```
 
-Trains for 50 epochs at 640×640, batch size 16. Best weights saved to `Model/finetuned/runs/yolov8s/weights/best.pt`.
+Trains for 50 epochs at 640×640, batch size 16. Best weights saved to `Model/finetuned/best_model.pt`.
 
 ### Fine-tune RT-DETR-l
 
@@ -152,17 +170,20 @@ Trains for 50 epochs at 640×640, batch size 16. Best weights saved to `Model/fi
 python Model/finetuned_rtdetr/train.py
 ```
 
-Trains for 50 epochs at 640×640, batch size 8. Best weights saved to `Model/finetuned_rtdetr/runs/rtdetr/weights/best.pt`.
+Trains for 50 epochs at 640×640, batch size 8. Best weights saved to `Model/finetuned_rtdetr/best_model.pt`.
 
-### Resolution Ablation (320 / 640 / 1280)
+### Resolution Ablation (320 and 1280)
 
 ```bash
-# Train all three resolutions
+# Train both resolutions
 python Model/finetuned/resolution_experiment/train_resolution.py
 
 # Train a single resolution
-python Model/finetuned/resolution_experiment/train_resolution.py --res 640
+python Model/finetuned/resolution_experiment/train_resolution.py --res 320
+python Model/finetuned/resolution_experiment/train_resolution.py --res 1280
 ```
+
+Best weights saved to `Model/finetuned/resolution_experiment/res_320/best_model.pt` and `res_1280/best_model.pt`. The 640×640 baseline uses the main fine-tuned model directly.
 
 ---
 
@@ -172,34 +193,34 @@ All evaluation modes are handled by a single script with flags:
 
 ### Base YOLOv8s vs Fine-tuned YOLOv8s
 ```bash
-python Results/evaluate.py
+python results/evaluate.py
 ```
-Outputs to `Results/visuals/base_vs_finetuned/`:
+Outputs to `results/visuals/base_vs_finetuned/`:
 - `confusion_matrix_base.png` — what COCO classes the base model predicts on parking images
 - `confusion_matrix_finetuned.png` — 2×2 empty/occupied confusion matrix
 - `metrics_comparison.png` — mAP, precision, recall, F1 comparison table
 
 ### Resolution Experiment
 ```bash
-python Results/evaluate.py --resolution
+python results/evaluate.py --resolution
 ```
-Outputs to `Results/visuals/resolution_experiment/`:
+Outputs to `results/visuals/resolution_experiment/`:
 - `metrics_table.png` — test set metrics for all three resolutions
 - `splits_table.png` — train/val/test metrics for all three resolutions
 
 ### YOLOv8s vs RT-DETR-l
 ```bash
-python Results/evaluate.py --rtdetr
+python results/evaluate.py --rtdetr
 ```
-Outputs to `Results/visuals/yolov8s_vs_rtdetr/`:
+Outputs to `results/visuals/yolov8s_vs_rtdetr/`:
 - `metrics_comparison.png` — test set comparison table
 - `splits_table.png` — train/val/test comparison for both models
 
 ### Failure Case Visualization
 ```bash
-python Results/evaluate.py --failures
+python results/evaluate.py --failures
 ```
-Outputs to `Results/visuals/failure_cases/`:
+Outputs to `results/visuals/failure_cases/`:
 - Up to 30 annotated test images showing missed detections, false positives, and wrong-class predictions
 
 ---
