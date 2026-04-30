@@ -1,4 +1,14 @@
-# Core deep learning
+# ==============================================================================
+# IMPORTANT — PyTorch installation
+# The line below installs the CPU-only version of PyTorch.
+# For GPU training (required), install the CUDA build instead:
+#
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+#
+# Replace cu121 with your CUDA version (cu118, cu121, cu124, etc.)
+# Check your CUDA version with: nvidia-smi
+# Full install guide: https://pytorch.org/get-started/locally/
+# ==============================================================================
 torch>=2.0.0
 torchvision>=0.15.0
 
