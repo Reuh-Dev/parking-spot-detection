@@ -55,7 +55,10 @@ DEVICE     = 0
 # =============================================================================
 
 def train_resolution(imgsz):
-    run_name = f"res_{imgsz}"
+    run_name  = f"res_{imgsz}"
+    out_dir   = os.path.join(os.path.dirname(os.path.abspath(__file__)), run_name)
+    tmp_runs  = os.path.join(out_dir, "_runs")
+    os.makedirs(out_dir, exist_ok=True)
 
     print("\n" + "=" * 60)
     print(f"TRAINING — imgsz = {imgsz}")
@@ -73,7 +76,7 @@ def train_resolution(imgsz):
         batch=BATCH_SIZE,
         workers=WORKERS,
         device=DEVICE,
-        project=RUNS_DIR,
+        project=tmp_runs,
         name=run_name,
         exist_ok=True,
         pretrained=True,
@@ -91,9 +94,14 @@ def train_resolution(imgsz):
         plots=False,
     )
 
-    best = os.path.join(RUNS_DIR, run_name, "weights", "best.pt")
-    print(f"\n  Done. Best weights: {best}")
-    return best
+    import shutil
+    src  = os.path.join(tmp_runs, run_name, "weights", "best.pt")
+    dest = os.path.join(out_dir, "best_model.pt")
+    shutil.copy(src, dest)
+    shutil.rmtree(tmp_runs, ignore_errors=True)
+
+    print(f"\n  Done. Best weights: {dest}")
+    return dest
 
 
 # =============================================================================
@@ -142,8 +150,8 @@ def main():
     for res, best in trained:
         print(f"  res_{res} weights : {best}")
     print()
-    print("  Evaluate each resolution with:")
-    print("    python Results/evaluate.py --weights <path_to_best.pt>")
+    print("  Evaluate all resolutions with:")
+    print("    python Results/evaluate.py --resolution")
     print("=" * 60)
 
 

@@ -70,11 +70,11 @@ DIR_RESOLUTION   = os.path.join(RESULTS_DIR, "visuals", "resolution_experiment")
 DIR_YOLO_VS_DETR = os.path.join(RESULTS_DIR, "visuals", "yolov8s_vs_rtdetr")
 DIR_FAILURES     = os.path.join(RESULTS_DIR, "visuals", "failure_cases")
 
-RES_EXP_DIR = os.path.join(PROJECT_ROOT, "Model", "finetuned", "resolution_experiment", "runs")
+RES_EXP_DIR = os.path.join(PROJECT_ROOT, "Model", "finetuned", "resolution_experiment")
 RES_MODELS  = [
-    ("YOLOv8s  320×320",  os.path.join(RES_EXP_DIR, "res_320",  "weights", "best.pt"), 320),
-    ("YOLOv8s  640×640",  DEFAULT_WEIGHTS,                                               640),
-    ("YOLOv8s 1280×1280", os.path.join(RES_EXP_DIR, "res_1280", "weights", "best.pt"), 1280),
+    ("YOLOv8s  320×320",  os.path.join(RES_EXP_DIR, "res_320",  "best_model.pt"), 320),
+    ("YOLOv8s  640×640",  os.path.join(RES_EXP_DIR, "res_640",  "best_model.pt"), 640),
+    ("YOLOv8s 1280×1280", os.path.join(RES_EXP_DIR, "res_1280", "best_model.pt"), 1280),
 ]
 
 CLASS_NAMES   = ["empty", "occupied"]
